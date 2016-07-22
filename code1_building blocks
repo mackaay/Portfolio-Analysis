@@ -1,0 +1,17 @@
+#############################
+#http://www.rdocumentation.org/packages/xts/versions/0.9-7
+#http://www.rdocumentation.org/packages/zoo/versions/1.7-13
+#http://www.rdocumentation.org/packages/PerformanceAnalytics/versions/1.1.0
+
+# Define ko_pep 
+ko_pep <- ko/pep
+
+# Make a time series plot of ko_pep
+  plot.zoo(ko_pep)
+  
+# Note that when the value of the ratio increases, the price of the share of Coca Cola Company increases more than the price of PepsiCo, and vice versa
+  
+# Add as a reference, a horizontal line at 1
+  abline(h=1)
+  
+# Where the value of the ratio is larger than one, the Coca Cola Company outperforms PepsiCo (when evaluating since January 2003)
