@@ -1,0 +1,65 @@
+# The package PerformanceAnalytics and xts, and the variable sp500 are pre-loaded
+
+# Convert the daily frequency of sp500 to monthly frequency
+sp500_monthly <- to.monthly(sp500)
+
+# Print the first six rows of sp500_monthly
+head(sp500_monthly)
+
+# Create sp500_returns using Return.calculate using the closing prices
+sp500_returns <- Return.calculate(sp500_monthly[,-c(1,2,3)] )
+
+# Time series plot
+plot.zoo(sp500_returns)
+
+# Produce the year x month table
+table.CalendarReturns(sp500_returns)
+
+### monthly mean and volatility###
+# sp500_returns is pre-loaded
+
+# Compute the mean monthly returns
+mean(sp500_returns)
+
+# Compute the geometric mean of monthly returns
+mean.geometric(sp500_returns)
+
+# Compute the standard deviation
+sd(sp500_returns)
+
+####################The (Annualized) Sharpe Ratio###################
+###Excess returns and the portfolio's Sharpe ratio###
+#The yearly compounded interest rate is given by (1+y)^12−1
+# rf and sp500_returns are pre-loaded
+
+# Annualized risk free rate
+annualized_rf <- (1 + rf)^12 - 1
+
+#Plot the annualized risk free rate
+plot.zoo(annualized_rf)
+  
+# Compute the series of excess portfolio returns 
+sp500_excess <- sp500_returns - rf
+
+# Compare the mean
+mean(sp500_excess)
+mean(sp500_returns)
+
+# Compute the Sharpe ratio
+sp500_sharpe <- mean(sp500_excess) / sd(sp500_returns) 
+
+###Annualized mean and volatility###
+# PerformanceAnalytics and sp500_returns are pre-loaded
+
+# Annualized mean
+Return.annualized(sp500_returns)
+
+# Annualized standard deviation
+StdDev.annualized(sp500_returns)
+
+# Annualized Sharpe ratio
+ann_sharpe <- (Return.annualized(sp500_returns)-0)/StdDev.annualized(sp500_returns)
+#the sharpe ratio is found by taking the mean excess returns subtracted by the risk-free rate, and then divided by the volatility!
+
+# All of the above at once
+table.AnnualizedReturns(sp500_returns)
