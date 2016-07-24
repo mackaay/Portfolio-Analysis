@@ -15,3 +15,110 @@ ko_pep <- ko/pep
   abline(h=1)
   
 # Where the value of the ratio is larger than one, the Coca Cola Company outperforms PepsiCo (when evaluating since January 2003)
+
+#######################portfolio weight############
+# Define the vector values
+values <- c(4000, 4000, 2000)
+
+# Define the vector weights
+weights <- values/sum(values)
+
+# Print the resulting weights
+weights
+
+###
+# Define marketcaps
+ marketcaps <- c( 5, 8, 9, 20, 25, 100, 100, 500, 700, 2000)
+  
+# Compute the weights
+weights <- marketcaps/sum(marketcaps)
+  
+# Inspect summary statistics
+summary(weights)
+  
+# Create a barplot of weights
+  barplot(weights)
+  
+########################portfolio returns#####################
+# Vector of initial value of the assets
+in_values <- c(1000, 5000, 2000)
+  
+# Vector of final values of the assets
+fin_values <- c(1100, 4500, 3000)
+
+# Weights as the proportion of total value invested in each assets
+weights <- in_values/sum(in_values)
+
+# Vector of simple returns of the assets 
+returns <- (fin_values - in_values)/in_values
+  
+# Compute portfolio return using the portfolio return formula
+preturns <- sum(weights*returns)
+  
+# Verify that it matches with the percentage change in the portfolio value
+all.equal(preturns,
+          (sum(fin_values) - sum(in_values)) / sum(in_values))
+          
+#############performance analysis#######################################
+###asset returns###
+# Load the packages xts and PerformanceAnalytics 
+library(xts)
+library(PerformanceAnalytics)
+
+# Define prices as the merged time series of aapl and msft
+prices <-  merge(aapl, msft)
+colnames(prices) <- c("AAPL", "MSFT")
+
+# Print the first and last six rows of prices
+ head(prices)
+tail(prices)
+
+# Create the variable returns using Return.calculate()  
+ returns <- Return.calculate(prices)
+  
+# Print the first six rows of returns. Note that the first observation is NA, because there is no prior price.
+head(returns)
+  
+# Remove the first row of returns
+returns <- returns[-1, ]
+ 
+###portfolio returns###
+#You will use the function Return.portfolio() for your calculations. 
+#For this function you will provide three arguments: R, weights, and rebalance_on. 
+#R is a time series of returns, weights is a vector of asset returns, and rebalance_on specifies which calendar-period to rebalance on. 
+# Create the weights
+weights <- c(0.5, 0.5)
+
+# Create a portfolio using buy and hold
+pf_bh <- Return.portfolio(R = returns, weights = weights)
+
+# Create a portfolio rebalancing monthly 
+pf_rebal <- Return.portfolio(R = returns, weights = weights, rebalance_on = "months")
+
+# Plot the time-series
+par(mfrow = c(2, 1), mar = c(2, 4, 2, 2))
+plot.zoo(pf_bh)
+plot.zoo(pf_rebal)
+
+###time series of weight###
+#by setting the argument verbose = TRUE in Return.portfolio() you can create a list of beginning of period (BOP) 
+# and end of period (EOP) weights and values in addition to the portfolio returns, and contributions.
+# Create the weights
+weights<- c(0.5, 0.5)
+
+# Create a portfolio using buy and hold
+pf_bh <- Return.portfolio(returns, weights = weights, verbose = T )
+
+# Create a portfolio that rebalances monthly
+pf_rebal <- Return.portfolio(returns, weights = weights, rebalance_on = "months", verbose = T  )
+
+# Create end of eop_weight_bh
+eop_weight_bh <- c(pf_bh$EOP.Weight)
+
+# Create eop_weight_rebal
+eop_weight_rebal <- c(pf_rebal$EOP.Weight)
+
+# Plot end of period weights
+par(mfrow = c(2, 1), mar=c(2, 4, 2, 2))
+plot.zoo(eop_weight_bh$AAPL)
+plot.zoo(eop_weight_rebal$AAPL)
